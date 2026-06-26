@@ -1,56 +1,104 @@
 # Usar com TitansBattle
 
-O `FocusCorreio` funciona com o `TitansBattle` usando recompensas por comando.
+Este guia mostra como fazer o `TitansBattle` entregar premios no `/correio` usando o `FocusCorreio`.
 
-A ideia e simples: quando o TitansBattle declarar um vencedor, ele executa um comando no console. Esse comando envia a recompensa para o `/correio` do jogador.
+A integracao nao precisa de API especial. Ela usa comandos de recompensa do proprio TitansBattle.
 
-## Requisitos
+## Como Funciona
 
-- `FocusCorreio` instalado e carregando sem erro.
-- `TitansBattle` instalado e com o evento ja criado.
-- O TitansBattle precisa executar o comando pelo console.
-- Jogadores comuns devem ter somente `focuscorreio.usar`.
-- Nao entregue `focuscorreio.admin` ou `focuscorreio.*` para jogadores comuns.
+Pense em 3 partes:
 
-## Comando Base
+| Parte | O que faz |
+| --- | --- |
+| `TitansBattle` | Controla o evento, descobre quem venceu e executa comandos de premio. |
+| `FocusCorreio` | Recebe o comando e salva a recompensa no correio do jogador. |
+| Jogador | Abre `/correio` e resgata o item quando quiser. |
 
-Use este formato dentro da lista de comandos do TitansBattle:
+O jogador nao envia nada para ninguem.
+
+O comando de premio e executado pelo console/evento, nao pelo jogador.
+
+## Permissoes Corretas
+
+Para jogadores comuns, use somente:
 
 ```text
-correio adicionar %player% MATERIAL QUANTIA Nome da Recompensa
+focuscorreio.usar
 ```
 
-Exemplos:
+Com isso o jogador consegue:
+
+- abrir `/correio`;
+- mudar pagina pelo menu;
+- atualizar o menu;
+- resgatar recompensas.
+
+Nao entregue para jogadores comuns:
 
 ```text
-correio adicionar %player% DIAMOND 16 Premio do Gladiador
-correio adicionar %player% TRIPWIRE_HOOK 1 Chave do Evento
-correio adicionar %player% NETHERITE_INGOT 2 Campeao do TitansBattle
+focuscorreio.admin
+focuscorreio.*
 ```
 
-Na configuracao do TitansBattle, os comandos normalmente ficam sem `/` no comeco, igual `give %player% diamond 1`.
+Essas permissoes permitem enviar recompensas para outras pessoas e devem ficar apenas para staff, console e plugins de evento.
 
-O jogador vencedor nao precisa de permissao para enviar recompensas. Ele so precisa de `focuscorreio.usar` para abrir o menu e resgatar o premio.
+## Resumo Rapido
 
-## Onde Configurar
+No arquivo do evento do TitansBattle, coloque um comando assim na recompensa:
 
-Cada evento do TitansBattle tem um arquivo proprio em:
+```text
+correio adicionar %player% DIAMOND 16 Premio do Evento
+```
+
+Quando o evento terminar:
+
+1. O TitansBattle troca `%player%` pelo nome do vencedor.
+2. O console executa o comando.
+3. O FocusCorreio salva o item no correio desse jogador.
+4. O jogador usa `/correio` para resgatar.
+
+## Onde Fica o Arquivo do Evento
+
+Crie ou edite um evento do TitansBattle.
+
+Normalmente os eventos ficam em:
 
 ```text
 plugins/TitansBattle/games/
 ```
 
-Abra o arquivo do evento que voce criou, por exemplo:
+Exemplo:
 
 ```text
 plugins/TitansBattle/games/gladiador.yml
 ```
 
-Procure a parte de `prizes`.
+Dentro desse arquivo, procure a parte:
 
-## Exemplo Para o Primeiro Lugar
+```yaml
+prizes:
+```
 
-Em eventos Free For All, normalmente o premio principal fica em `FIRST`.
+E edite o premio que voce quer.
+
+## Entendendo FIRST, SECOND, THIRD e KILLER
+
+O TitansBattle separa as recompensas por posicao.
+
+| Chave | Quando usa |
+| --- | --- |
+| `FIRST` | Primeiro lugar / vencedor principal. |
+| `SECOND` | Segundo lugar em torneios de eliminacao. |
+| `THIRD` | Terceiro lugar em torneios de eliminacao. |
+| `KILLER` | Jogador com mais abates, se essa opcao estiver ativada no evento. |
+
+Em eventos Free For All, normalmente voce usa apenas `FIRST`.
+
+Em eventos de eliminacao, voce pode usar `FIRST`, `SECOND` e `THIRD`.
+
+## Premio Para Primeiro Lugar
+
+Exemplo simples:
 
 ```yaml
 prizes:
@@ -61,17 +109,14 @@ prizes:
       - "correio adicionar %player% TRIPWIRE_HOOK 1 Chave do Gladiador"
 ```
 
-Depois rode:
+O que isso faz:
 
-```text
-/tb reload
-```
-
-Quando o jogador vencer, os itens vao aparecer no `/correio`.
+- `member.commands.enabled: true` liga os comandos de premio.
+- `member.commands.command_list` e a lista de comandos que o TitansBattle vai executar.
+- `%player%` vira o nome do vencedor.
+- Cada linha manda um item diferente para o correio.
 
 ## Primeiro, Segundo e Terceiro Lugar
-
-Em torneios de eliminacao, o TitansBattle pode usar `FIRST`, `SECOND` e `THIRD`.
 
 ```yaml
 prizes:
@@ -94,7 +139,13 @@ prizes:
 
 ## Premio Para Quem Mais Matou
 
-Se o seu evento usa premio para `KILLER`, voce tambem pode mandar pelo correio:
+Se o seu evento estiver com killer ativado:
+
+```yaml
+killer: true
+```
+
+Voce pode configurar:
 
 ```yaml
 prizes:
@@ -106,7 +157,9 @@ prizes:
 
 ## Eventos em Grupo
 
-Se o evento for em grupo, voce pode configurar premio de lider e de membros.
+Se o evento usa grupo, o TitansBattle pode separar premio de lider e premio de membro.
+
+Para lider:
 
 ```yaml
 prizes:
@@ -114,45 +167,32 @@ prizes:
     leader.commands.enabled: true
     leader.commands.command_list:
       - "correio adicionar %player% NETHERITE_INGOT 2 Lider Campeao"
+```
 
+Para membros:
+
+```yaml
+prizes:
+  FIRST:
     member.commands.enabled: true
     member.commands.command_list:
       - "correio adicionar %player% DIAMOND 16 Membro Campeao"
 ```
 
-Se quiser que lider receba a mesma recompensa dos membros, use a opcao do TitansBattle:
+Se quiser que o lider receba a mesma recompensa dos membros:
 
 ```yaml
 prizes:
   FIRST:
     treat_leaders_as_members: true
+    member.commands.enabled: true
+    member.commands.command_list:
+      - "correio adicionar %player% DIAMOND 16 Time Campeao"
 ```
 
-## Modelo Antigo de Config
+## Varios Eventos, Varios Premios
 
-Algumas versoes antigas do TitansBattle usam a configuracao assim:
-
-```yaml
-prizes:
-  members:
-    commands:
-      enabled: true
-      command_list:
-        - "correio adicionar %player% DIAMOND 16 Premio do Evento"
-  leaders:
-    commands:
-      enabled: true
-      command_list:
-        - "correio adicionar %player% NETHERITE_INGOT 2 Premio do Lider"
-```
-
-Se o seu arquivo estiver nesse formato, siga o formato dele e apenas troque o comando da recompensa.
-
-## Criar Recompensas Diferentes Para Cada Evento
-
-Cada arquivo em `plugins/TitansBattle/games/` pode ter comandos diferentes.
-
-Exemplo:
+Cada evento tem seu proprio arquivo. Entao cada um pode ter premios diferentes.
 
 ```text
 gladiador.yml -> correio adicionar %player% DIAMOND 16 Premio do Gladiador
@@ -160,54 +200,87 @@ sumo.yml      -> correio adicionar %player% EMERALD 10 Premio do Sumo
 arena.yml     -> correio adicionar %player% GOLD_INGOT 32 Premio da Arena
 ```
 
-Assim cada evento entrega um premio diferente no correio.
+Assim voce cria quantos eventos quiser, cada um entregando um item especifico no correio.
 
-## Testar
+## Como Recarregar Depois de Editar
 
-1. Edite o arquivo do evento.
-2. Salve.
-3. Rode:
+Depois de alterar o arquivo do evento:
 
 ```text
 /tb reload
 ```
 
-4. Inicie o evento:
+Depois inicie o evento como voce ja faz normalmente.
+
+Exemplo:
 
 ```text
-/tb start nomeDoEvento
+/tb start gladiador
 ```
 
-5. Quando o evento terminar, o vencedor deve receber aviso do FocusCorreio.
-6. O jogador abre:
+Se no seu servidor o comando de iniciar evento tiver outro nome, use o comando configurado no seu TitansBattle.
+
+## Como Testar Antes do Evento
+
+Antes de esperar o evento acabar, teste o comando direto no console:
+
+```text
+correio adicionar SeuNick DIAMOND 1 Teste TitansBattle
+```
+
+Depois entre no jogo e use:
 
 ```text
 /correio
 ```
 
+Se o item apareceu, o FocusCorreio esta certo. A partir dai, o que falta e o TitansBattle executar esse mesmo comando no fim do evento.
+
+## O Que Nao Fazer
+
+Nao coloque `/` no inicio do comando se o seu TitansBattle segue o padrao de comandos em lista:
+
+```text
+correio adicionar %player% DIAMOND 16 Premio
+```
+
+Evite:
+
+```text
+/correio adicionar %player% DIAMOND 16 Premio
+```
+
+Nao use recompensa em `items` se voce quer que va para o correio. Use `commands`.
+
+Nao de `focuscorreio.admin` para jogadores.
+
 ## Problemas Comuns
 
 ### O premio nao chegou
 
-Confira se o comando esta sem erro:
-
-```text
-correio adicionar %player% DIAMOND 1 Teste
-```
-
-Teste direto no console, trocando `%player%` pelo nick real:
+Teste o comando no console:
 
 ```text
 correio adicionar Steve DIAMOND 1 Teste TitansBattle
 ```
 
+Se esse comando funcionar, o problema esta na configuracao do TitansBattle.
+
 ### O TitansBattle nao executou o comando
 
-Confirme se `member.commands.enabled` ou `leader.commands.enabled` esta `true`.
+Confira se esta assim:
+
+```yaml
+member.commands.enabled: true
+member.commands.command_list:
+  - "correio adicionar %player% DIAMOND 16 Premio"
+```
+
+Se for premio de lider, confira `leader.commands.enabled`.
 
 ### O material deu invalido
 
-Use nomes de materiais do Minecraft em ingles, por exemplo:
+Use nomes de materiais do Minecraft em ingles:
 
 ```text
 DIAMOND
@@ -217,6 +290,22 @@ NETHERITE_INGOT
 GOLDEN_APPLE
 ```
 
-### Entregou no inventario em vez do correio
+### O jogador recebeu permissao demais
 
-Entao o premio provavelmente esta configurado em `items`, nao em `commands`. Para usar o FocusCorreio, deixe a recompensa em `commands`.
+No LuckPerms ou no plugin de permissao que voce usa, deixe jogador comum somente com:
+
+```text
+focuscorreio.usar
+```
+
+Remova:
+
+```text
+focuscorreio.admin
+focuscorreio.*
+```
+
+## Fonte
+
+- Wiki oficial do TitansBattle: https://github.com/RoinujNosde/TitansBattle/wiki
+- Guia de criacao/edicao de evento: https://github.com/RoinujNosde/TitansBattle/wiki/Creating-and-editing-a-game

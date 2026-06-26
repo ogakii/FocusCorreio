@@ -126,7 +126,9 @@ No plugin do dragao, use `delivery-mode: CORREIO` ou `delivery-mode: AUTO`.
 
 O `FocusCorreio` tambem pode receber recompensas do `TitansBattle`.
 
-No arquivo do evento do TitansBattle, coloque a recompensa como comando. Esse comando deve ser executado pelo console do evento, nao por jogador comum:
+Funciona assim: o TitansBattle termina o evento, descobre o vencedor e executa um comando pelo console. Esse comando chama o FocusCorreio e coloca o item no correio do jogador.
+
+No arquivo do evento do TitansBattle, dentro de `prizes`, coloque a recompensa como comando. Esse comando deve ser executado pelo console do evento, nao por jogador comum:
 
 ```text
 correio adicionar %player% MATERIAL QUANTIA Nome da Recompensa
@@ -157,7 +159,7 @@ Quando o evento acabar, o vencedor abre:
 
 O jogador vencedor nao precisa de permissao de envio. Ele precisa apenas de `focuscorreio.usar` para abrir o menu e resgatar.
 
-Guia completo com exemplos para primeiro, segundo, terceiro lugar, killer e eventos em grupo:
+O guia completo explica `FIRST`, `SECOND`, `THIRD`, `KILLER`, eventos em grupo, testes e erros comuns:
 
 - [Usar com TitansBattle](docs/TITANSBATTLE.md)
 
