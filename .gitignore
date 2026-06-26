@@ -1,0 +1,25 @@
+# Build
+/build/
+/target/
+*.class
+*.jar
+
+# Dependencias baixadas pelo build.ps1
+/.deps/
+
+# Servidor local / testes
+/plugins/
+/world/
+/world_nether/
+/world_the_end/
+/logs/
+/cache/
+
+# IDE
+/.idea/
+/.vscode/
+*.iml
+
+# Sistema
+Thumbs.db
+.DS_Store

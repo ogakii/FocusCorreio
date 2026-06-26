@@ -1,0 +1,47 @@
+messages:
+  prefix: '&6&lCorreio &8> &f'
+  no-permission: '&cVoce nao tem permissao para isso.'
+  only-player: '&cApenas jogadores podem usar este comando.'
+  empty: '&eSeu correio esta vazio.'
+  reward-added: '&aRecompensa enviada para &f%player%&a.'
+  reward-added-target: '&aVoce recebeu &f%title%&a no /correio.'
+  claim-one: '&aVoce resgatou &f%title%&a.'
+  claim-all: '&aVoce resgatou &f%amount%&a recompensa(s).'
+  inventory-full: '&cSeu inventario nao tem espaco suficiente.'
+  pending-on-join: '&eVoce tem &f%amount%&e recompensa(s) esperando no &f/correio&e.'
+  reloaded: '&aFocusCorreio recarregado.'
+  cleared: '&aCorreio de &f%player%&a limpo.'
+  invalid-material: '&cMaterial invalido: &f%material%&c.'
+  invalid-number: '&cUse uma quantia maior que zero.'
+  dragon-current: '&eDragao: &f%enabled% &7| &f%amount%x %material% &7- &f%title%'
+  dragon-updated: '&aRecompensa do dragao definida: &f%amount%x %material% &7- &f%title%&a.'
+  dragon-enabled: '&aRecompensa automatica do dragao ativada.'
+  dragon-disabled: '&cRecompensa automatica do dragao desativada.'
+gui:
+  title: '&6Correio'
+  empty-name: '&e&lNenhuma recompensa'
+  empty-lore:
+    - '&7Quando voce ganhar premios,'
+    - '&7eles vao aparecer aqui.'
+    - ''
+    - '&8Eventos, crates, bosses e staff.'
+  reward-lore:
+    - '&8Recompensa pendente'
+    - ''
+    - '&7Origem: &f%source%'
+    - '&7Recebido: &f%date%'
+    - ''
+    - '&eClique para resgatar.'
+    - '&6Botao direito resgata tudo.'
+  previous-page: '&ePagina anterior'
+  next-page: '&eProxima pagina'
+  claim-all: '&a&lResgatar tudo'
+  refresh: '&b&lAtualizar'
+  page-info: '&7Pagina &f%page%&7/&f%pages%'
+automatic-rewards:
+  ender-dragon:
+    enabled: false
+    title: 'Recompensa do Dragao'
+    source: 'Dragao do End'
+    material: DRAGON_EGG
+    amount: 1

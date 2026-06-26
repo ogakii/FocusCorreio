@@ -1,0 +1,18 @@
+name: FocusCorreio
+main: br.com.focuscorreio.FocusCorreioPlugin
+version: 2.0.0
+api-version: '1.20'
+author: Codex
+description: Correio de recompensas com GUI, estilo caixas/chaves/eventos.
+commands:
+  correio:
+    description: Abre e gerencia o correio de recompensas.
+    usage: /correio
+    aliases: [mailbox, recompensas]
+permissions:
+  focuscorreio.usar:
+    description: Permite abrir e resgatar o correio.
+    default: true
+  focuscorreio.admin:
+    description: Permite enviar, listar, limpar e recarregar correios.
+    default: op
