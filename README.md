@@ -4,6 +4,12 @@ Plugin de correio para servidores Bukkit, Spigot e Paper. Ele cria um `/correio`
 
 O nome do plugin e `FocusCorreio`, mas dentro do jogo o menu aparece apenas como **Correio**.
 
+## Preview
+
+<p align="center">
+  <img src="docs/images/correio-preview-01.png" alt="Menu Correio do plugin FocusCorreio" width="80%" />
+</p>
+
 ## Destaques
 
 - Menu `/correio` com itens centralizados.
